@@ -1,21 +1,43 @@
-class Solution {
- public:
-  int eraseOverlapIntervals(vector<vector<int>>& intervals) {
-    if (intervals.empty())
-      return 0;
 
-    ranges::sort(intervals,
-                 [](const auto& a, const auto& b) { return a[1] < b[1]; });
+class Solution
+{
+public:
+    int eraseOverlapIntervals(vector<vector<int>> &ins)
+    {
+        ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+        int mine = ins[0][0], maxe = ins[0][1];
+        for (auto &i : ins)
+        {
+            mine = min(i[0], mine);
+            maxe = max(i[1], maxe);
+        }
+        for (auto &i : ins)
+        {
+            i[0] -= mine;
+            i[1] -= mine;
+        }
+        //(maxe - mine + 1) is the max number of non-overlapping intervals
+        vector<int> st(maxe - mine + 1, -1);
+        for (auto &i : ins)
+        {
+            st[i[1]] = max(st[i[1]], i[0]);
+        }
 
-    int ans = 0;
-    int currentEnd = intervals[0][1];
-
-    for (int i = 1; i < intervals.size(); ++i)
-      if (intervals[i][0] >= currentEnd)
-        currentEnd = intervals[i][1];
-      else
-        ++ans;
-
-    return ans;
-  }
+        int prev = -1;
+        int ma = 0;
+        for (int i = 0; i < st.size(); i++)
+        {
+            if (st[i] == -1)
+                continue;
+            if (st[i] > prev)
+            {
+                prev = i - 1;
+                ma++;
+            }
+        }
+        return (int)ins.size() - ma;
+    }
 };
