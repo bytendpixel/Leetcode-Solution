@@ -1,25 +1,33 @@
-#Time: O(∣s∣)
-#Space: O(∣s∣)
-
 class Solution {
- public:
-  string convert(string s, int numRows) {
-    string ans;
-    vector<vector<char>> rows(numRows);
-    int k = 0;
-    int direction = (numRows == 1) - 1;
+public:
+    string convert(string s, int numRows) {
+        if (numRows == 1) {
+            return s;
+        }
+        
+        stringstream answer;
+        int n = s.length();
+        int diff = 2 * (numRows - 1);
+        int diagonalDiff = diff;
+        int secondIndex;
+        int index;
+        for (int i = 0; i < numRows; i++) {
+            index = i;
 
-    for (const char c : s) {
-      rows[k].push_back(c);
-      if (k == 0 || k == numRows - 1)
-        direction *= -1;
-      k += direction;
+            while (index < n) {
+                answer << s[index];
+                if (i != 0 && i != numRows - 1) {
+                    diagonalDiff = diff-2*i;
+                    secondIndex = index + diagonalDiff;
+                    
+                    if (secondIndex < n) {
+                        answer << s[secondIndex];
+                    }
+                }
+                index += diff;
+            }
+        }
+        
+        return answer.str();
     }
-
-    for (const vector<char>& row : rows)
-      for (const char c : row)
-        ans += c;
-
-    return ans;
-  }
 };
