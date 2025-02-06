@@ -1,6 +1,1 @@
-SELECT
-  EmployeeUNI.unique_id,
-  Employees.name
-FROM Employees
-LEFT JOIN EmployeeUNI
-  USING (id);
+select eu.unique_id, e.name from employees e left join employeeUNI eu on e.id=eu.id;
