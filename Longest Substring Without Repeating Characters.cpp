@@ -1,7 +1,3 @@
-#Approach 1: Sliding window¶
-#Time: 𝑂(𝑛)
-#Space: 𝑂(128)=𝑂(1)
-
 class Solution {
  public:
   int lengthOfLongestSubstring(string s) {
