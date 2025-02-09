@@ -1,31 +1,32 @@
+// struct TreeNode { int val; Node *left, *rite; Node(int x) : val(x), left(NULL), rite(NULL) {} };
+
+using i32 = std::int32_t; // using f32 = std::float32_t;
+using i64 = std::int64_t; // using f64 = std::float64_t;
+
+static constexpr int N = 6000; 
+
+int mapping[N + 1]{}, idx, n;
+
 class Solution {
- public:
-  TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
-    unordered_map<int, int> inToIndex;
+public:
+    TreeNode* buildTree(const auto &inorder, const auto& posorder) {
+        n = posorder.size() & inorder.size();
 
-    for (int i = 0; i < inorder.size(); ++i)
-      inToIndex[inorder[i]] = i;
-
-    return build(inorder, 0, inorder.size() - 1, postorder, 0,
-                 postorder.size() - 1, inToIndex);
-  }
-
- private:
-  TreeNode* build(const vector<int>& inorder, int inStart, int inEnd,
-                  const vector<int>& postorder, int postStart, int postEnd,
-                  const unordered_map<int, int>& inToIndex) {
-    if (inStart > inEnd)
-      return nullptr;
-
-    const int rootVal = postorder[postEnd];
-    const int rootInIndex = inToIndex.at(rootVal);
-    const int leftSize = rootInIndex - inStart;
-
-    TreeNode* root = new TreeNode(rootVal);
-    root->left = build(inorder, inStart, rootInIndex - 1, postorder, postStart,
-                       postStart + leftSize - 1, inToIndex);
-    root->right = build(inorder, rootInIndex + 1, inEnd, postorder,
-                        postStart + leftSize, postEnd - 1, inToIndex);
-    return root;
-  }
+        for(const int &i: inorder) mapping[i + (N >> 1)] = &i - &inorder[0];
+    	
+    	idx = n - 1;
+    	auto build = [&](auto&& build, int st, int en) -> TreeNode* {
+    		if(st > en || en < st) return nullptr;
+    		
+    		int val = posorder[idx--];
+    		TreeNode *t = new TreeNode(val);
+    		
+    		t->right = build(build, mapping[val + (N >> 1)] + 1, en);
+            t->left  = build(build, st, mapping[val + (N >> 1)] - 1);
+    		
+            return t;
+    	};
+    	
+        return build(build, 0, n - 1);
+    }
 };
