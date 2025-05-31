@@ -1,30 +1,46 @@
 class Solution {
- public:
-  int snakesAndLadders(vector<vector<int>>& board) {
-    const int n = board.size();
-    queue<int> q{{1}};
-    vector<bool> seen(1 + n * n);
-    vector<int> arr(1 + n * n);  // 2D -> 1D
+public:
+    int snakesAndLadders(vector<vector<int>>& board) {
+        int n = board.size();
 
-    for (int i = 0; i < n; ++i)
-      for (int j = 0; j < n; ++j)
-        arr[(n - 1 - i) * n + ((n - i) % 2 == 0 ? n - j : j + 1)] = board[i][j];
+        vector<int>moves(n*n+1,-1);
 
-    for (int step = 1; !q.empty(); ++step)
-      for (int sz = q.size(); sz > 0; --sz) {
-        const int curr = q.front();
-        q.pop();
-        for (int next = curr + 1; next <= min(curr + 6, n * n); ++next) {
-          const int dest = arr[next] > 0 ? arr[next] : next;
-          if (dest == n * n)
-            return step;
-          if (seen[dest])
-            continue;
-          q.push(dest);
-          seen[dest] = true;
+        int idx = 1;
+        bool ltor = true;
+
+        for (int row = n - 1; row >= 0; row--) {
+    for (int i = 0; i < n; i++) {
+        int col = ltor ? i : n - i - 1;
+        moves[idx++] = board[row][col];
+    }
+    ltor = !ltor;
+}
+        queue<int>q;
+        vector<int>vis(n*n+1,0);
+        q.push(1);
+        vis[1] = 1;
+        int steps =0;
+        
+
+        while(!q.empty()){
+            int size = q.size();
+            while(size--){
+                int curr =  q.front();
+            q.pop();
+            if(curr==n*n) return steps;
+
+            for(int dice = 1;dice<7;dice++){
+                int next = curr + dice;
+                if(next>n*n) continue;
+                int dest = moves[next] == -1 ? next : moves[next];
+                if (!vis[dest]) {
+                        vis[dest] = 1;
+                        q.push(dest);
+                }
+            }
+            }
+            steps++;
         }
-      }
-
-    return -1;
-  }
+        return -1;
+    }
 };
